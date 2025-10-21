@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>处理结果</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            animation: changeBackground 20s infinite;
+        }
+        @keyframes changeBackground {
+            {% for i in range(bing_wallpapers|length) %}
+            {{ i * (100 // bing_wallpapers|length) }}% { background-image: url('{{ bing_wallpapers[i] }}'); }
+            {% endfor %}
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>处理结果</h1>
+        <h2>标签分布</h2>
+        <pre>{{ label_counts }}</pre>
+
+        <h2>缺失值数量</h2>
+        <img src="{{ url_for('static', filename='missing_values.png') }}" alt="缺失值数量统计">
+
+        <h2>标签分布</h2>
+        <img src="{{ url_for('static', filename='label_distribution.png') }}" alt="标签分布">
+
+        <h2>优惠券类型占比</h2>
+        <img src="{{ url_for('static', filename='coupon_type_distribution.png') }}" alt="优惠券类型占比">
+
+        <form action="/upload_db" method="post">
+            <input type="submit" value="上传到数据库">
+        </form>
+    </div>
+</body>
+</html>
