@@ -220,7 +220,8 @@ thread.start()
 ### 联系方式
 
 - 项目主页: [GitHub Repository](https://github.com/longzheng268/O2O-Coupon-Feature-Analysis-and-Processing-Web)
-- 演示视频: [YouTube](https://youtu.be/EuD5We0Vg9A)
+- 演示视频渠道1: [YouTube](https://youtu.be/EuD5We0Vg9A)
+- 演示视频渠道2: [哔哩哔哩]([https://youtu.be/EuD5We0Vg9A](https://www.bilibili.com/video/BV1NuWRzuEdp/?share_source=copy_web&vd_source=794c781902c3c40f0f46ab7c8ed131a1))
 
 ---
 
@@ -232,7 +233,8 @@ This is a Flask and MySQL-based web application for O2O coupon feature analysis 
 
 ### Demo Video
 
-📺 [Watch Demo Video](https://youtu.be/EuD5We0Vg9A)
+📺 [Watch Demo YouTube Video](https://youtu.be/EuD5We0Vg9A)
+📺 [watch Demo Bilibili Video](https://www.bilibili.com/video/BV1NuWRzuEdp/?share_source=copy_web&vd_source=794c781902c3c40f0f46ab7c8ed131a1)
 
 ### Key Features
 
