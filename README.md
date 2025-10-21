@@ -10,7 +10,9 @@
 
 ### 演示视频
 
-📺 [观看演示视频](https://youtu.be/EuD5We0Vg9A)
+📺 [观看YouTube演示视频](https://youtu.be/EuD5We0Vg9A)
+
+📺 [观看bilibili演示视频](https://www.bilibili.com/video/BV1NuWRzuEdp/?share_source=copy_web&vd_source=794c781902c3c40f0f46ab7c8ed131a1)
 
 ### 主要功能
 
