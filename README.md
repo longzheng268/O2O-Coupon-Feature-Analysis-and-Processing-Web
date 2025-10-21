@@ -221,7 +221,7 @@ thread.start()
 
 - 项目主页: [GitHub Repository](https://github.com/longzheng268/O2O-Coupon-Feature-Analysis-and-Processing-Web)
 - 演示视频渠道1: [YouTube](https://youtu.be/EuD5We0Vg9A)
-- 演示视频渠道2: [哔哩哔哩]([https://youtu.be/EuD5We0Vg9A](https://www.bilibili.com/video/BV1NuWRzuEdp/?share_source=copy_web&vd_source=794c781902c3c40f0f46ab7c8ed131a1))
+- 演示视频渠道2: [哔哩哔哩](https://www.bilibili.com/video/BV1NuWRzuEdp/?share_source=copy_web&vd_source=794c781902c3c40f0f46ab7c8ed131a1)
 
 ---
 
