@@ -442,4 +442,5 @@ Issues and Pull Requests are welcome!
 ### Contact
 
 - Project Homepage: [GitHub Repository](https://github.com/longzheng268/O2O-Coupon-Feature-Analysis-and-Processing-Web)
-- Demo Video: [YouTube](https://youtu.be/EuD5We0Vg9A)
+- Demo YouTube Video: [YouTube](https://youtu.be/EuD5We0Vg9A)
+- Demo Bilibili Video：[Bilibili](https://www.bilibili.com/video/BV1NuWRzuEdp/?share_source=copy_web&vd_source=794c781902c3c40f0f46ab7c8ed131a1)
