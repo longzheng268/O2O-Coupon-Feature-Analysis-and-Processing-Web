@@ -1,11 +1,16 @@
+import threading
 from flask import Flask, request, render_template, redirect, url_for
 import pandas as pd
+from pandas.core.api import (
+    DataFrame,
+)
 import matplotlib.pyplot as plt
 from matplotlib.font_manager import FontProperties
 from sqlalchemy import create_engine, text
-import os
+import os, sys
 import requests
 import json
+import numpy as np
 
 app = Flask(__name__)
 
@@ -14,30 +19,58 @@ UPLOAD_FOLDER = 'uploads'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+#app.config['/O2O_web_app/uploads/ccf_train.csv'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER'] = 'uploads'
 
 # 创建MySQL数据库连接
-DB_CONNECTION = 'mysql+pymysql://root:raspberry@127.0.0.1:3306/O2O'
+DB_CONNECTION = 'mysql+pymysql://root:q89kfj82@mytwitter.lz-0315.com:3306/O2O'
 engine = create_engine(DB_CONNECTION)
+
+df_cache: DataFrame = None
+
+def async_to_sql(df, datasheet_name):
+    try:
+        df.to_sql(datasheet_name, con=engine, if_exists='replace', index=False)
+    except Exception:
+        pass
 
 def process_csv(file_path):
     df = pd.read_csv(file_path)
 
     # 将原始数据保存到数据库
-    df.to_sql('ccf_train', con=engine, if_exists='replace', index=False)
+    # df.to_sql('ccf_train', con=engine, if_exists='replace', index=False)
 
     # 处理日期格式
     df['Date_received'] = pd.to_datetime(df['Date_received'], format='%Y%m%d', errors='coerce')
     df['Date'] = pd.to_datetime(df['Date'], format='%Y%m%d', errors='coerce')
 
     # 生成标签列
-    df['label'] = df.apply(lambda row: 1 if pd.notnull(row['Date']) and pd.notnull(row['Coupon_id']) and (row['Date'] - row['Date_received']).days <= 15 else
-                                     -1 if pd.isnull(row['Date']) and pd.notnull(row['Coupon_id']) else
-                                     0 if pd.notnull(row['Date']) and pd.notnull(row['Coupon_id']) and (row['Date'] - row['Date_received']).days > 15 else
-                                     None, axis=1)
+    # df['label'] = df.swifter.apply(lambda row: 1 if pd.notnull(row['Date']) and pd.notnull(row['Coupon_id']) and (row['Date'] - row['Date_received']).days <= 15 else
+    #                                  -1 if pd.isnull(row['Date']) and pd.notnull(row['Coupon_id']) else
+    #                                  0 if pd.notnull(row['Date']) and pd.notnull(row['Coupon_id']) and (row['Date'] - row['Date_received']).days > 15 else
+    #                                  None, axis=1)
+    # 首先计算日期差
+    days_diff = (df['Date'] - df['Date_received']).dt.days
+
+    # 使用numpy的where方法进行向量化条件判断
+    df['label'] = np.where(
+        (df['Date'].notnull() & df['Coupon_id'].notnull() & (days_diff <= 15)), 1,
+        np.where(
+            (df['Date'].isnull() & df['Coupon_id'].notnull()), -1,
+            np.where(
+                (df['Date'].notnull() & df['Coupon_id'].notnull() & (days_diff > 15)), 0,
+                None
+            )
+        )
+    )
 
     # 将处理后的数据保存到数据库
-    df.to_sql('ccf_train_processed', con=engine, if_exists='replace', index=False)
+    thread = threading.Thread(target=async_to_sql, args=(df, 'ccf_train_processed'))
+    thread.daemon = True
+    thread.start()
+    # df.to_sql('ccf_train_processed', con=engine, if_exists='replace', index=False)
+    global df_cache
+    df_cache = df
 
     return df
 
@@ -53,16 +86,24 @@ def index():
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
             file.save(file_path)
             df = process_csv(file_path)
-            df.to_sql('ccf_train_features', con=engine, if_exists='replace', index=False)
+            #df.to_sql('ccf_train_features', con=engine, if_exists='replace', index=False)
             return redirect(url_for('result'))
     return render_template('index.html')
 
 @app.route('/result', methods=['GET'])
 def result():
-    df = pd.read_sql('SELECT * FROM ccf_train_processed', con=engine)
+    # df = pd.read_sql('SELECT * FROM ccf_train_processed', con=engine)
+    global df_cache
+    df = df_cache
+    if df is None:
+        df = pd.read_sql('SELECT * FROM ccf_train_processed', con=engine)
     label_counts = df['label'].value_counts(dropna=False)
 
-    font = FontProperties(fname='C:/Windows/Fonts/simsun.ttc', size=12)
+    font = None
+    if sys.platform.startswith('linux'):
+        font = FontProperties(fname='font/simsun.ttc', size=12)
+    else:
+        font = FontProperties(fname='C:/Windows/Fonts/simsun.ttc', size=12)
 
     # 缺失值数量条形图
     missing_values = df.isnull().sum()
